@@ -30,7 +30,7 @@ jobs:
       - name: build
         run: R CMD INSTALL --build .
       - name: Upload results
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v2
         with:
           name: binary
           path: *.tgz
