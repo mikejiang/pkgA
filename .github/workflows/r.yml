@@ -24,7 +24,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Set up R ${{ matrix.r-version }}
-        uses: r-lib/actions/setup-r
+        uses: r-lib/actions/setup-r@main
         with:
           r-version: ${{ matrix.r-version }}
       - name: build
