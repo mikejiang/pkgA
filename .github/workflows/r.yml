@@ -34,6 +34,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: https://uploads.github.com/repos/mikejiang/pkgA/releases/33296957/assets
-          asset_path: ./pkgA_0.1.0.tgz
+          asset_path: pkgA_0.1.0.tgz
           asset_name: pkgA_0.1.0.tgz
           asset_content_type: application/gzip
