@@ -30,10 +30,11 @@ jobs:
       - name: build
         run: R CMD INSTALL --build .
       - name: Upload Release Asset
-        id: upload-release-asset
-        uses: actions/upload-release-asset@v1
+        uses: svenstaro/upload-release-action@v2
         with:
-          upload_url: https://uploads.github.com/repos/mikejiang/pkgA/releases/33296957/assets
-          asset_path: 'pkgA_0.1.0.tgz'
-          asset_name: 'pkgA_0.1.0.tgz'
-          asset_content_type: application/gzip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: pkgA_0.1.0.tgz
+          asset_name: pkgA_0.1.0.tgz
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "This is my release text"
