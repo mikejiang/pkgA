@@ -40,10 +40,11 @@ jobs:
         if: runner.os != 'Linux'
         run: R CMD INSTALL --build .
       - name: Upload Release Asset
+        if: runner.os != 'Linux'
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "*.${{ matrix.suffix }}"
+          file: '*.${{ matrix.config.suffix }}'
           file_glob: true
           tag: "R4.0"
           overwrite: true
