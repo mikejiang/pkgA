@@ -16,24 +16,34 @@ on:
 
 jobs:
   build:
-    runs-on: macOS-latest
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (${{ matrix.config.r }})
     strategy:
+      fail-fast: false
       matrix:
-        r-version: [4.0]
+        config:
+          - {os: windows-latest, r: 'release', suffix: 'zip'}
+          - {os: macOS-latest, r: 'release', suffix: 'tgz'}
+          - {os: ubuntu-20.04, r: 'release', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
+
+    env:
+      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
+      RSPM: ${{ matrix.config.rspm }}
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up R ${{ matrix.r-version }}
+      - name: Set up R ${{ matrix.r }}
         uses: r-lib/actions/setup-r@master
         with:
-          r-version: ${{ matrix.r-version }}
+          r-version: ${{ matrix.r }}
       - name: build
+        if: runner.os != 'Linux'
         run: R CMD INSTALL --build .
       - name: Upload Release Asset
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: "*.tgz"
+          file: "*.${{ matrix.suffix }}"
           file_glob: true
           tag: "R4.0"
           overwrite: true
