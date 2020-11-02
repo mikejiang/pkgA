@@ -33,8 +33,8 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: pkgA_0.1.0.tgz
-          asset_name: pkgA_0.1.0.tgz
+          file: "*.tgz"
+          file_glob: true
           tag: "R4.0"
           overwrite: true
           body: "This is my release text"
