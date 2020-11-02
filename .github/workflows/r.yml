@@ -35,6 +35,6 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: pkgA_0.1.0.tgz
           asset_name: pkgA_0.1.0.tgz
-          tag: ${{ github.ref }}
+          tag: "R 4.0"
           overwrite: true
           body: "This is my release text"
