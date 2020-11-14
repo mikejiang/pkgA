@@ -82,13 +82,16 @@ jobs:
         env:
           SUPER_SECRET: ${{ secrets.TT }}
         run: GITHUB_TOKEN=$SUPER_SECRET
-
+        
+      - name: check token
+        run: echo $GITHUB_TOKEN
+        
       - name: Install dependencies
         run: |
           remotes::install_cran(c("rcmdcheck", "devtools"))
           remotes::install_github("RGLab/cytoinstaller")
           Sys.getenv("GITHUB_TOKEN")
-          gh("GET /rate_limit")$resources$core$remaining
+          gh::gh("GET /rate_limit")$resources$core$remaining
           cytoinstaller::cyto_install_deps(dependencies = TRUE)
         shell: Rscript {0}
       
