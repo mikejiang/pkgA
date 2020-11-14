@@ -81,7 +81,7 @@ jobs:
       - name: set token
         env:
           SUPER_SECRET: ${{ secrets.TT }}
-        run: echo "tt=$(SUPER_SECRET)" >> $GITHUB_ENV
+        run: echo "tt=$SUPER_SECRET" >> $GITHUB_ENV
 
       - name: check token
         run: |
@@ -103,29 +103,29 @@ jobs:
 #         run: rcmdcheck::rcmdcheck(args = c("--no-manual"), check_dir = "check")
 #         shell: Rscript {0}
 
-      - name: Upload check results
-        if: failure()
-        uses: actions/upload-artifact@main
-        with:
-          name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-          path: check
+#       - name: Upload check results
+#         if: failure()
+#         uses: actions/upload-artifact@main
+#         with:
+#           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
+#           path: check
           
-      - name: build src pkg
-        if: runner.os == 'Linux'
-        run: devtools::build()
-        shell: Rscript {0}
+#       - name: build src pkg
+#         if: runner.os == 'Linux'
+#         run: devtools::build()
+#         shell: Rscript {0}
         
-      - name: build bin pkg
-        if: runner.os != 'Linux'
-        run: devtools::build(binary = TRUE)
-        shell: Rscript {0}  
+#       - name: build bin pkg
+#         if: runner.os != 'Linux'
+#         run: devtools::build(binary = TRUE)
+#         shell: Rscript {0}  
         
-      - name: Upload Release Asset
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: '../*.${{ matrix.config.suffix }}'
-          file_glob: true
-          tag: bioc_${{ env.bioc_ver}}
-          overwrite: true
-          body: "This is my release text"
+#       - name: Upload Release Asset
+#         uses: svenstaro/upload-release-action@v2
+#         with:
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           file: '../*.${{ matrix.config.suffix }}'
+#           file_glob: true
+#           tag: bioc_${{ env.bioc_ver}}
+#           overwrite: true
+#           body: "This is my release text"
