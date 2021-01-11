@@ -32,8 +32,7 @@ jobs:
       - name: Check flowWorkspace
         if: steps.cache-pkgA.output.cache-hit != 'true'
         id: flowWorkspace
-        working-directory: packages
         run: |
-          Rscript -e 'rcmdcheck::rcmdcheck(".", args = c("--no-manual"), check_dir = "check")'
+          R CMD check .
         shell: bash
       
