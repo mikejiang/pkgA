@@ -1,129 +1,42 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-#
-# See https://github.com/r-lib/actions/tree/master/examples#readme for
-# additional example workflows available for the R community.
-
-name: build
+name: cytoverse-ci
 
 on:
   push:
-    branches: [ release, master ]
-  pull_request:
-    branches: [ release, master ]
+    paths: 
+      - packages/**
+      - .github/workflows/cytoverse-ci.yml
+ 
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
 
 jobs:
-  build:
-    runs-on: ${{ matrix.config.os }}
-    name: ${{ matrix.config.os }} (${{ matrix.r }})
-    strategy:
-      fail-fast: false
-      matrix:
-        r: ['release', 'devel']
-        config:
-#           - {os: windows-latest, suffix: 'zip'}
-          - {os: macOS-latest, suffix: 'tgz'}
-#           - {os: ubuntu-20.04, suffix: 'tar.gz', rspm: "https://packagemanager.rstudio.com/cran/__linux__/focal/latest"}
-        isMaster:
-          - ${{ contains(github.ref, 'master') }}
-        exclude:
-          - isMaster: false
-            r: devel
-          - isMaster: true
-            r: release
-    env:
-      R_REMOTES_NO_ERRORS_FROM_WARNINGS: true
-      RSPM: ${{ matrix.config.rspm }}
-    
+  rcheck:
+    runs-on: ubuntu-latest
+    container: r-base
     steps:
-#       - uses: actions/checkout@v2
-      - name: Set up R ${{ matrix.r }}
-        uses: r-lib/actions/setup-r@master
-        with:
-          r-version: ${{ matrix.r }}
-          http-user-agent: ${{ matrix.config.http-user-agent }}
+      - uses: actions/checkout@v2
 
-#       - uses: r-lib/actions/setup-pandoc@v1
-
-      - name: Query dependencies
-        run: |
-          install.packages('gh')
-          gh::gh("GET /rate_limit")$resources$core$remaining
-#           saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
-#           writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
-        shell: Rscript {0}
-        
-#       - name: Get bioc ver
-#         run: echo "bioc_ver=$(Rscript -e 'writeLines(as.character(remotes::bioc_version()))')" >> $GITHUB_ENV
-#         shell: bash
-        
-#       - name: Cache R packages
-#         if: runner.os != 'Windows'
-#         uses: actions/cache@v2
-#         with:
-#           path: ${{ env.R_LIBS_USER }}
-#           key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
-#           restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
-
-#       - name: check bioc ver
-#         run: echo $bioc_ver
-#         shell: bash
-        
-#       - name: Install system dependencies
-#         if: runner.os == 'Linux'
-#         run: |
-#           while read -r cmd
-#           do
-#             eval sudo $cmd
-#           done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
-
-      - name: set token
+      - name: Cache pkgA
+        uses: actions/cache@v2
         env:
-          SUPER_SECRET: ${{ secrets.TT }}
-        run: echo "GITHUB_TOKEN=$SUPER_SECRET" >> $GITHUB_ENV
+          cache-name: cache-pkgA
+        with:
+          # npm cache files are stored in `~/.npm` on Linux/macOS
+          path: /usr/local/lib/R/site-library/pkgA
+          key: ${{ runner.os }}-rcheck-${{ env.cache-name }}-${{ hashFiles('./**') }}
 
-      - name: check token
+      - name: install packages
+        id: cytolib
+        if: steps.cache-pkgA.output.cache-hit != 'true'
         run: |
-          echo $GITHUB_TOKEN
-        
-      - name: Install dependencies
+          R CMD INSTALL .
+        shell: bash
+
+      - name: Check flowWorkspace
+        if: steps.cache-pkgA.output.cache-hit != 'true'
+        id: flowWorkspace
+        working-directory: packages
         run: |
-          Sys.getenv("GITHUB_TOKEN")
-          gh::gh("GET /rate_limit")$resources$core$remaining
-#           cytoinstaller::cyto_install_deps(dependencies = TRUE)
-        shell: Rscript {0}
+          Rscript -e 'rcmdcheck::rcmdcheck(".", args = c("--no-manual"), check_dir = "check")'
+        shell: bash
       
-#       - name: Check
-#         env:
-#           _R_CHECK_CRAN_INCOMING_REMOTE_: false
-#         run: rcmdcheck::rcmdcheck(args = c("--no-manual"), check_dir = "check")
-#         shell: Rscript {0}
-
-#       - name: Upload check results
-#         if: failure()
-#         uses: actions/upload-artifact@main
-#         with:
-#           name: ${{ runner.os }}-r${{ matrix.config.r }}-results
-#           path: check
-          
-#       - name: build src pkg
-#         if: runner.os == 'Linux'
-#         run: devtools::build()
-#         shell: Rscript {0}
-        
-#       - name: build bin pkg
-#         if: runner.os != 'Linux'
-#         run: devtools::build(binary = TRUE)
-#         shell: Rscript {0}  
-        
-#       - name: Upload Release Asset
-#         uses: svenstaro/upload-release-action@v2
-#         with:
-#           repo_token: ${{ secrets.GITHUB_TOKEN }}
-#           file: '../*.${{ matrix.config.suffix }}'
-#           file_glob: true
-#           tag: bioc_${{ env.bioc_ver}}
-#           overwrite: true
-#           body: "This is my release text"
