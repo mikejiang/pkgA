@@ -9,7 +9,7 @@ on:
 jobs:
   rcheck:
     runs-on: ubuntu-latest
-    container: r-base
+#     container: r-base
     steps:
       - uses: actions/checkout@v2
 
@@ -24,6 +24,7 @@ jobs:
 
       - name: install packages
         id: cytolib
+        continue-on-error: true
 #         if: steps.cache-pkgA.output.cache-hit != 'true'
         run: |
           R CMD INSTALL ..
@@ -34,7 +35,7 @@ jobs:
 #         if: steps.cache-pkgA.output.cache-hit != 'true'
         id: flowWorkspace
         run: |
-          R CMD check .
+          echo 'dd'
         shell: bash
       
       - name: Check on failures
