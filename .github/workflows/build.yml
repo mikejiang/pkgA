@@ -24,21 +24,17 @@ jobs:
 
       - name: install packages
         id: cytolib
-        continue-on-error: true
 #         if: steps.cache-pkgA.output.cache-hit != 'true'
         run: |
           R CMD INSTALL ..
         shell: bash
 
       - name: Check flowWorkspace
-        continue-on-error: true
+        if: always()
 #         if: steps.cache-pkgA.output.cache-hit != 'true'
         id: flowWorkspace
         run: |
           echo 'dd'
         shell: bash
       
-      - name: Check on failures
-        if: steps.flowWorkspace.outputs.status == 'failure' || steps.cytolib.outputs.status == 'failure'
-        run: exit 1
-
+      
