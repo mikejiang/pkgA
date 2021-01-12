@@ -39,7 +39,6 @@ jobs:
         shell: bash
       
       - name: Check on failures
-        continue-on-error: true
         if: steps.flowWorkspace.outputs.status == 'failure' || steps.cytolib.outputs.status == 'failure'
         run: exit 1
 
