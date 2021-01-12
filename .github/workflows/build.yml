@@ -13,26 +13,32 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Cache pkgA
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-pkgA
-        with:
-          # npm cache files are stored in `~/.npm` on Linux/macOS
-          path: /usr/local/lib/R/site-library/pkgA
-          key: ${{ runner.os }}-rcheck-${{ env.cache-name }}-${{ hashFiles('./**') }}
+#       - name: Cache pkgA
+#         uses: actions/cache@v2
+#         env:
+#           cache-name: cache-pkgA
+#         with:
+#           # npm cache files are stored in `~/.npm` on Linux/macOS
+#           path: /usr/local/lib/R/site-library/pkgA
+#           key: ${{ runner.os }}-rcheck-${{ env.cache-name }}-${{ hashFiles('./**') }}
 
       - name: install packages
         id: cytolib
-        if: steps.cache-pkgA.output.cache-hit != 'true'
+#         if: steps.cache-pkgA.output.cache-hit != 'true'
         run: |
-          R CMD INSTALL .
+          R CMD INSTALL ..
         shell: bash
 
       - name: Check flowWorkspace
-        if: steps.cache-pkgA.output.cache-hit != 'true'
+        continue-on-error: true
+#         if: steps.cache-pkgA.output.cache-hit != 'true'
         id: flowWorkspace
         run: |
           R CMD check .
         shell: bash
       
+      - name: Check on failures
+        continue-on-error: true
+        if: steps.flowWorkspace.outputs.status == 'failure' || steps.cytolib.outputs.status == 'failure'
+        run: exit 1
+
