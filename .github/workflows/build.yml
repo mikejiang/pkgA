@@ -20,7 +20,7 @@ jobs:
         uses: 'actions/upload-artifact@v2'
         with:
             name: my-artifact
-            path: ${{ tmp_gs_dir }}
+            path: ${{ env.tmp_gs_dir }}
   
 #   test-open-source:
 #       runs-on: [self-hosted, macox, coloc]
