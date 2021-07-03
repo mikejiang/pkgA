@@ -25,6 +25,7 @@ jobs:
         run: rm -rf ${{ env.tmp_gs_dir }}
   
   test-open-source:
+      needs: rcheck
       runs-on: ubuntu-latest
       steps:
         - name: Download the test gs from the artifact
