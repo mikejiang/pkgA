@@ -9,32 +9,40 @@ on:
 jobs:
   rcheck:
     runs-on: ubuntu-latest
-#     container: r-base
     steps:
-      - uses: actions/checkout@v2
-
-#       - name: Cache pkgA
-#         uses: actions/cache@v2
-#         env:
-#           cache-name: cache-pkgA
-#         with:
-#           # npm cache files are stored in `~/.npm` on Linux/macOS
-#           path: /usr/local/lib/R/site-library/pkgA
-#           key: ${{ runner.os }}-rcheck-${{ env.cache-name }}-${{ hashFiles('./**') }}
-
-      - name: install packages
-        id: cytolib
-#         if: steps.cache-pkgA.output.cache-hit != 'true'
+      - name : generate gs
         run: |
-          R CMD INSTALL ..
-        shell: bash
+          mkdir gs
+          cd gs
+          echo 'test' >> t.txt
+          echo 'tmp_gs_dir=gs' >> $GITHUB_ENV
+      - name: Upload the test gs as the artifact
+        uses: 'actions/upload-artifact@v2'
+        with:
+            name: my-artifact
+            path: ${{ tmp_gs_dir }}
+  
+#   test-open-source:
+#       runs-on: [self-hosted, macox, coloc]
 
-      - name: Check flowWorkspace
-        if: always()
-#         if: steps.cache-pkgA.output.cache-hit != 'true'
-        id: flowWorkspace
-        run: |
-          echo 'dd'
-        shell: bash
+#       # Steps represent a sequence of tasks that will be executed as part of the job
+#       steps:
+#         - name: Download the test gs from the artifact
+#           uses: actions/download-artifact@v2
+#             with:
+#               name: my-artifact
+#               path: /tmp/gs
+
+#         - name: Run the R tests against the test gs
+#           run: |
+#             BiocManager::install(c("cytolib", "flowWorkspace"))
+#           shell: Rscript {0}  
+#           run: |
+#             git clone --depth 1 https://github.com/RGLab/flowWorkspace.git --branch master --single-branch
+#           run: echo "test-gs-compatibility=yes" >> $GITHUB_ENV
+#           run: |
+#             devtools::test("flowWorkspace")
+#           shell: Rscript {0}
+#           run: rm -rf /tmp/gs  
       
       
