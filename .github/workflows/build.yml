@@ -14,8 +14,10 @@ jobs:
         run: |
           mkdir gs
           cd gs
-          echo 'test21' >> t.txt
-          echo 'tmp_gs_dir=gs' >> $GITHUB_ENV
+          echo 'test22' >> t.txt
+          dd=gs
+          echo 'tmp_gs_dir=$dd' >> $GITHUB_ENV
+          echo $dd
       - name: Upload the test gs as the artifact
         uses: 'actions/upload-artifact@v2'
         with:
