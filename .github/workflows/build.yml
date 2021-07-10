@@ -12,6 +12,8 @@ jobs:
     steps:
       - name : generate gs
         run: |
+          pwd
+          ls
           mkdir gs
           cd gs
           echo 'test22' >> t.txt
