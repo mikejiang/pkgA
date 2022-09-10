@@ -32,6 +32,8 @@ jobs:
       - name: check modified cytolib files
         id: check_cytolib_files
         run: |
+          pwd
+          git diff HEAD
           files=`git diff --name-only HEAD^ HEAD`
           if echo $files | grep -q R/; then
             echo "::set-output name=cytolib_modified::true"
