@@ -54,6 +54,8 @@ jobs:
           fi
 
           # set flag only if both public and internal are updated
+          echo $public_modified
+          echo $internal_modified
           if [ "$public_modified" == true ] || [ "$internal_modified" == true ]; then
             echo "::set-output name=cytolib_modified::true"
           else
