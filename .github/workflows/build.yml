@@ -9,29 +9,29 @@ jobs:
   rcheck:
     runs-on: ubuntu-latest
     outputs:
-      cytolib_modified: ${{ steps.check_files.outputs.cytolib_modified }}
+      cytolib_modified: ${{ steps.check_cytolib_files.outputs.cytolib_modified }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
         with:
           fetch-depth: 2
-      - name : generate gs
-        run: |
-          pwd
-          ls
-          mkdir gs
-          cd gs
-          echo 'test22' >> t.txt
-          dd=gs
-          echo 'tmp_gs_dir=$dd' >> $GITHUB_ENV
-          echo $dd
-      - name: Upload the test gs as the artifact
-        uses: 'actions/upload-artifact@v2'
-        with:
-            name: my-artifact
-            path: ${{ env.tmp_gs_dir }}
-      - name: clean up temp gs
-        run: rm -rf ${{ env.tmp_gs_dir }}
+      # - name : generate gs
+      #   run: |
+      #     pwd
+      #     ls
+      #     mkdir gs
+      #     cd gs
+      #     echo 'test22' >> t.txt
+      #     dd=gs
+      #     echo 'tmp_gs_dir=$dd' >> $GITHUB_ENV
+      #     echo $dd
+      # - name: Upload the test gs as the artifact
+      #   uses: 'actions/upload-artifact@v2'
+      #   with:
+      #       name: my-artifact
+      #       path: ${{ env.tmp_gs_dir }}
+      # - name: clean up temp gs
+      #   run: rm -rf ${{ env.tmp_gs_dir }}
 
       - name: check modified cytolib files
         id: check_cytolib_files
