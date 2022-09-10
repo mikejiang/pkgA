@@ -49,13 +49,13 @@ jobs:
           cd /tmp
           git clone https://github.com/mikejiang/testA.git
           cd testA
-          if git diff --name-only HEAD^ HEAD | grep -q test.txt; then
+          if git diff --name-only HEAD^ HEAD | grep -q README; then
             public_modified=true
           fi
 
           # set flag only if both public and internal are updated
           # echo $public_modified
-          echo $internal_modified
+          # echo $internal_modified
           if [ "$public_modified" == true ] || [ "$internal_modified" == true ]; then
             echo "::set-output name=cytolib_modified::true"
           else
