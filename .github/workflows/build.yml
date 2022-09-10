@@ -8,8 +8,8 @@ on:
 jobs:
   rcheck:
     runs-on: ubuntu-latest
-   outputs:
-    cytolib_modified: ${{ steps.check_files.outputs.cytolib_modified }}
+    outputs:
+      cytolib_modified: ${{ steps.check_files.outputs.cytolib_modified }}
     steps:
       - name : generate gs
         run: |
@@ -30,14 +30,14 @@ jobs:
         run: rm -rf ${{ env.tmp_gs_dir }}
 
       - name: check modified cytolib files
-          id: check_cytolib_files
-          run: |
-            files=`git diff --name-only HEAD^ HEAD`
-            if echo $files | grep -q R/; then
-              echo "::set-output name=cytolib_modified::true"
-            else
-              echo "::set-output name=cytolib_modified::false"
-            fi
+        id: check_cytolib_files
+        run: |
+          files=`git diff --name-only HEAD^ HEAD`
+          if echo $files | grep -q R/; then
+            echo "::set-output name=cytolib_modified::true"
+          else
+            echo "::set-output name=cytolib_modified::false"
+          fi
 
   test-open-source:
       needs: rcheck
