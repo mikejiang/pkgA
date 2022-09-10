@@ -11,6 +11,10 @@ jobs:
     outputs:
       cytolib_modified: ${{ steps.check_files.outputs.cytolib_modified }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - name : generate gs
         run: |
           pwd
